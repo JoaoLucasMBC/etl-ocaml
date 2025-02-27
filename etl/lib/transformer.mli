@@ -1,7 +1,7 @@
 open Extractor ;;
 
 type order_total = {
-  order_idd: int;
+  order_id: int;
   total_amout: float;
   total_taxes: float
 } ;;
