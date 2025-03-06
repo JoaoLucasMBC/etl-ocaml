@@ -16,3 +16,4 @@ type order_item = {
 
 val read_order_csv : string -> order list
 val read_order_item_csv : string -> order_item list
+val process_filter: order -> bool

@@ -63,3 +63,31 @@ let read_order_csv path =
 
 let read_order_item_csv path = 
   read_csv path order_item_csv_to_record ;;
+
+
+(* Assisted by GPT *)
+let process_filter =
+  let status_ref = ref None in
+  let origin_ref = ref None in
+
+  let set_status s = status_ref := Some (parse_order_status s) in
+  let set_origin o = origin_ref := Some (parse_order_origin o) in
+
+  let specs = [
+    ("--status", Arg.String set_status, "Filter by order status");
+    ("--origin", Arg.String set_origin, "Filter by order origin")
+  ] in
+
+  let usage_msg = "Usage: program_name [--status STATUS] [--origin ORIGIN]" in
+  Arg.parse specs (fun _ -> ()) usage_msg;
+
+  let filter_fn order =
+    (match !status_ref with
+    | Some s -> order.status = s
+    | None -> true)
+    &&
+    (match !origin_ref with
+    | Some o -> order.origin = o
+    | None -> true)
+  in
+  filter_fn

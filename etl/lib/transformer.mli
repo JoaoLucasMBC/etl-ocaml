@@ -6,4 +6,4 @@ type order_total = {
   total_taxes: float
 } ;;
 
-val transform_orders : order list -> order_item list -> order_total list
+val transform_orders : ?filter:(order -> bool) -> order list -> order_item list -> order_total list
