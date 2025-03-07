@@ -16,6 +16,18 @@ type order_item = {
   tax: float; 
 } ;;
 
+type item_join_order = {
+  order_id: int;
+  client_id: int;
+  order_date: Ptime.t;
+  status: int;
+  origin: int;
+  product_id: int;
+  quantity: int;
+  price: float;
+  tax: float;
+} ;;
+
 let parse_order order =
   match order with
   | id :: client_id :: order_date :: status :: origin :: [] -> 
@@ -66,7 +78,7 @@ let read_order_item_csv path =
 
 
 (* Assisted by GPT *)
-let process_filter =
+let process_filter: (item_join_order -> bool) =
   let status_ref = ref None in
   let origin_ref = ref None in
 
@@ -81,13 +93,31 @@ let process_filter =
   let usage_msg = "Usage: program_name [--status STATUS] [--origin ORIGIN]" in
   Arg.parse specs (fun _ -> ()) usage_msg;
 
-  let filter_fn order =
+  let filter_fn (i: item_join_order) =
     (match !status_ref with
-    | Some s -> order.status = s
+    | Some s -> i.status = s
     | None -> true)
     &&
     (match !origin_ref with
-    | Some o -> order.origin = o
+    | Some o -> i.origin = o
     | None -> true)
   in
   filter_fn
+
+let rec inner_join (order_lst: order list) (item_lst: order_item list) : item_join_order list =
+  match item_lst with
+  | [] -> []
+  | item :: t -> 
+    match List.find_opt (fun (o: order) -> o.id = item.order_id) order_lst with
+    | Some o -> {
+                  order_id = item.order_id;
+                  client_id = o.client_id;
+                  order_date = o.order_date;
+                  status = o.status;
+                  origin = o.origin;
+                  product_id = item.product_id;
+                  quantity = item.quantity;
+                  price = item.price;
+                  tax = item.tax
+                } :: inner_join order_lst t
+    | _ -> failwith "Every item must have an order" ;;
