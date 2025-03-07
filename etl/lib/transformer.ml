@@ -1,18 +1,28 @@
-  open Extractor ;;
+open Extractor ;;
 
-  type order_total = {
-    order_id: int;
-    total_amout: float;
-    total_taxes: float
-  } ;;
+type order_total = {
+  order_id: int;
+  total_amout: float;
+  total_taxes: float
+} ;;
 
-  let calculate_total (order_id: int) (order_items: order_item list) =
-    List.fold_left (fun (sum_amount, sum_tax) (amount, tax) -> (sum_amount +. amount, sum_tax +. tax)) (0.0, 0.0)
-      (List.map (fun x -> ((float_of_int x.quantity) *. x.price, (float_of_int x.quantity) *. x.price *. x.tax))
-        (List.filter (fun (x: order_item) -> x.order_id = order_id) order_items)) ;;
-
-  let transform_orders ?(filter=(fun _ -> true)) (orders: order list) (order_items: order_item list) =
-    List.map (fun x -> 
-      let total_amount, total_taxes = calculate_total x.id order_items in
-      { order_id = x.id; total_amout = total_amount; total_taxes = total_taxes }
-    ) (List.filter filter orders) ;;
+(* 1. SHOULD I ORDER BY ID? *)
+(* 2. WHAT ABOUT THE ORDER WITH NO ITEMS *)
+let transform_orders ?(filter=(fun _ -> true)) (joined_lst: item_join_order list) =
+  List.filter filter joined_lst
+  |> List.fold_left (fun assoc_lst (curr_item: item_join_order) ->
+      match List.assoc_opt curr_item.order_id assoc_lst with
+      | Some total -> 
+          (total.order_id, {
+            order_id = total.order_id;
+            total_amout = total.total_amout +. (float_of_int curr_item.quantity) *. curr_item.price;
+            total_taxes = total.total_taxes +. (float_of_int curr_item.quantity) *. curr_item.price *. curr_item.tax
+          }) :: List.remove_assoc total.order_id assoc_lst
+      | None -> 
+          (curr_item.order_id, {
+            order_id = curr_item.order_id;
+            total_amout = (float_of_int curr_item.quantity) *. curr_item.price;
+            total_taxes = (float_of_int curr_item.quantity) *. curr_item.price *. curr_item.tax
+          }) :: assoc_lst
+    ) []
+  |> List.map snd ;;
