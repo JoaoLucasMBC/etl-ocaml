@@ -1,4 +1,4 @@
 (executable
  (public_name etl)
  (name main)
- (libraries etl csv ptime))
+ (libraries etl csv ptime cohttp-lwt-unix))

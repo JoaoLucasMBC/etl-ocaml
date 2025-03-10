@@ -28,5 +28,8 @@ type item_join_order = {
 
 val read_order_csv : string -> order list
 val read_order_item_csv : string -> order_item list
+val read_order_url : string -> order list
+val read_order_item_url : string -> order_item list
+
 val process_filter: item_join_order -> bool
 val inner_join: order list -> order_item list -> item_join_order list

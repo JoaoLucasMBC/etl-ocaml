@@ -121,3 +121,23 @@ let rec inner_join (order_lst: order list) (item_lst: order_item list) : item_jo
                   tax = item.tax
                 } :: inner_join order_lst t
     | _ -> failwith "Every item must have an order" ;;
+
+
+
+(* https://github.com/mirage/ocaml-cohttp *)
+let fetch url =
+  let uri = (Uri.of_string url) in
+  let (_, body) = Lwt_main.run (Cohttp_lwt_unix.Client.get uri) in
+  let body_str = Lwt_main.run (Cohttp_lwt.Body.to_string body) in
+  body_str ;;
+
+let read_csv_url url convert =
+  let raw_data = fetch url in
+  let data = Csv.of_string raw_data |> Csv.input_all in
+  convert data;;
+
+let read_order_url url =
+  read_csv_url url order_csv_to_record ;;
+
+let read_order_item_url url =
+  read_csv_url url order_item_csv_to_record ;;
