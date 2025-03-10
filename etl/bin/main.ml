@@ -8,4 +8,4 @@ let () =
   let filter: (item_join_order->bool) = process_filter in
   let joined_data: item_join_order list = inner_join order_data order_item_data in
   let processed_values: order_total list = transform_orders ~filter joined_data in
-  write_order_total_to_csv "data/output.csv" processed_values ;;
+  write_order_total_to_db "./data/output.db" processed_values ;;
