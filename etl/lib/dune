@@ -1,4 +1,4 @@
 (library
  (name etl)
  (public_name etl)
- (libraries csv ptime))
+ (libraries csv ptime cohttp-lwt-unix sqlite3))
