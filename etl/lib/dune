@@ -2,3 +2,5 @@
  (name etl)
  (public_name etl)
  (libraries csv ptime cohttp-lwt-unix sqlite3))
+ (documentation
+  (package etl))

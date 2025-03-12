@@ -2,6 +2,14 @@ open Etl.Extractor ;;
 open Etl.Transformer ;;
 open Etl.Loader ;;
 
+
+(** Entry point of the program.
+    - Reads order and order item data from CSV files.
+    - Performs an inner join on the data.
+    - Applies filtering logic from command-line arguments.
+    - Computes order totals.
+    - Writes results to both a CSV file and a database.
+    @return Unit () *)
 let () = 
   let order_data: order list = read_order_url "https://raw.githubusercontent.com/JoaoLucasMBC/etl-ocaml/refs/heads/main/etl/data/order.csv" in
   let order_item_data: order_item list = read_order_item_url "https://raw.githubusercontent.com/JoaoLucasMBC/etl-ocaml/refs/heads/main/etl/data/order_item.csv" in
