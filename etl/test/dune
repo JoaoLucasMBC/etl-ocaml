@@ -1,2 +1,9 @@
 (test
- (name test_etl))
+ (name test_parser)
+ (modules test_parser)
+ (libraries ounit2 etl))
+
+(test
+ (name test_transformer)
+ (modules test_transformer)
+ (libraries ounit2 etl))

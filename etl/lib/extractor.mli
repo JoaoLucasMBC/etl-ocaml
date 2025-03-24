@@ -63,3 +63,29 @@ val process_filter: item_join_order -> bool
     @return A list of [item_join_order] records.
     @raise Failure if an order item does not have a corresponding order. *)
 val inner_join: order list -> order_item list -> item_join_order list
+
+(** Parses a list of strings into an [order] record.
+  @param order The list of strings representing an order row read from a csv source.
+  @return The parsed [order] record.
+  @raise Failure if the input does not match the expected format.
+*)
+val parse_order : string list -> order
+
+(** Parses a list of strings into an [order_item] record.
+    @param order_item The list of strings representing an order item row from a csv source.
+    @return The parsed [order_item] record.
+    @raise Failure if the input does not match the expected format.
+*)
+val parse_order_item : string list -> order_item
+
+(** Converts a list of orders read from a CSV source into a list of [order] records.
+    @param lst The list of CSV rows.
+    @return A list of parsed [order] records.
+*)
+val  order_csv_to_record : string list list -> order list
+
+(** Converts a list of order items from a CSV source into a list of [order_item] records.
+    @param lst The list of CSV rows.
+    @return A list of parsed [order_item] records.
+*)
+val order_item_csv_to_record : string list list -> order_item list
