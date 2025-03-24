@@ -50,8 +50,8 @@ let gracefully_exit error message db =
 (** Cleans the [order_total] table by deleting all rows.
     @param db The SQLite3 database connection.
     @return Unit () *)
-let clean_table db =
-  let sql = "DELETE FROM order_total" in
+let clean_table db table =
+  let sql = Printf.sprintf "DELETE FROM %s" table in 
   match Sqlite3.exec db sql with
   | Sqlite3.Rc.OK -> ()
   | r ->
@@ -65,7 +65,7 @@ let clean_table db =
     @raise Failure if insertion fails. *)
 let write_order_total_to_db db_path order_total_lst = 
   let db = Sqlite3.db_open db_path in
-  clean_table db;
+  clean_table db "order_total";
 
   (* Recursively inserts each row into the database. *)
   let rec write_row row_lst =
@@ -89,3 +89,35 @@ let write_order_total_to_db db_path order_total_lst =
       in write_row rest
 
   in write_row order_total_lst ;;
+
+
+(** Writes a list of average income and tax records into an SQLite database.
+  @param db_path The path to the SQLite database file.
+  @param avg_income_tax_lst A list of average income and tax records to insert.
+  @return Unit () *)
+let write_avg_income_tax_monthly_to_db db_path (avg_income_tax_lst: avg_income_tax list) =
+  let db = Sqlite3.db_open db_path in
+  clean_table db "avg_income_tax";
+
+  (* Recursively inserts each row into the database. *)
+  let rec write_row (row_lst: avg_income_tax list) =
+    match row_lst with
+    | [] -> print_endline "Insertion ended successfully\n"
+    | at :: rest -> 
+      let sql =
+        Printf.sprintf "INSERT INTO avg_income_tax (month_year, avg_income, avg_tax) VALUES ('%s', %.2f, %.2f)" 
+          at.month_year at.avg_income at.avg_tax 
+      in
+      
+      (* Execute the SQL statement *)
+      let () = match Sqlite3.exec db sql with
+      | Sqlite3.Rc.OK ->
+        let id = Sqlite3.last_insert_rowid db in
+        Printf.printf "Row inserted with id %Ld\n" id
+      | r -> 
+        prerr_endline (Sqlite3.Rc.to_string r); 
+        prerr_endline (Sqlite3.errmsg db)
+      
+      in write_row rest
+
+  in write_row avg_income_tax_lst ;;
