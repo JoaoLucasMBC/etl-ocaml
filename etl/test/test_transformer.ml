@@ -97,7 +97,6 @@ let test_inner_join_no_order _ =
   assert_raises (Failure "Every item must have an order")
     (fun () -> ignore (inner_join [order_rec] [order_item_rec]))
 
-(* --- Assemble test suite --- *)
 
 let suite =
   "PureFunctionsTestSuite" >::: [

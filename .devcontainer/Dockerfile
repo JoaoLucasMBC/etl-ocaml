@@ -17,20 +17,6 @@ RUN apt-get update && apt-get install -y \
 
 USER vscode
 
-
-#  RUN curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | sh -s -- -y && \
-#      ~/.ghcup/bin/ghcup install ghc && \
-#      ~/.ghcup/bin/ghcup install cabal && \
-#      ~/.ghcup/bin/ghcup install stack && \
-     #~/.ghcup/bin/ghcup set ghc default
-
-     
-#     cabal update && \
-#    cabal install hlint stylish-haskell
-
-# Add paths for GHCup and opam
-#ENV PATH="/root/.ghcup/bin:/root/.cabal/bin:/root/.local/bin:$PATH"
-#RUN ls -l ./
 COPY postCreate.sh /home/vscode/postCreate.sh
 USER root
 RUN chmod +x /home/vscode/postCreate.sh

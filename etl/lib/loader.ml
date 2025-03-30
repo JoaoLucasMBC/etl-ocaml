@@ -16,7 +16,7 @@ let unparse_total_order order_total_record =
 (** Processes a list of order total records into a format suitable for CSV writing.
     @param order_total_lst A list of order total records.
     @return A list of string lists representing CSV rows. *)
-let process_data order_total_lst =
+let process_order_total_data order_total_lst =
   List.map (fun x -> unparse_total_order x) order_total_lst ;;
 
 (** Writes a list of order total records to a CSV file.
@@ -26,14 +26,12 @@ let process_data order_total_lst =
 let write_order_total_to_csv path order_total_lst =
   let file = Csv.to_channel (open_out path) in
   Csv.output_record file ["order_id"; "total_amount"; "total_taxes"];
-  Csv.output_all file (process_data order_total_lst);
+  Csv.output_all file (process_order_total_data order_total_lst);
   Csv.close_out file;
   () ;;
 
 
 (* https://github.com/cedlemo/ocaml-sqlite3-notes *)
-(* SHOULD I ALSO CHECK IF THE TABLE EXISTS AND OTHERWISE CREATE THE TABLE? *)
-
 (** Handles errors gracefully, prints an error message, and exits the program.
     @param error The SQLite3 error code.
     @param message A custom error message.
@@ -47,15 +45,28 @@ let gracefully_exit error message db =
   let () = prerr_endline "Exiting ..." in
   exit 1
 
-(** Cleans the [order_total] table by deleting all rows.
+(** Creates the [table] in [db] if it does not exist. 
+    @param db The SQLite3 database connection
+    @param table The name of the table to be created
+    @param sql The sql string of the table to create.
+    @return Unit () *)
+let create_table db table sql =
+  match Sqlite3.exec db sql with
+  | Sqlite3.Rc.OK -> ()
+  | r ->
+    let message = Printf.sprintf "Internal error to create the table %s." table in
+    gracefully_exit r message db ;;
+
+(** Cleans the [table] table by deleting all rows.
     @param db The SQLite3 database connection.
+    @param table The name of the table to clean.
     @return Unit () *)
 let clean_table db table =
   let sql = Printf.sprintf "DELETE FROM %s" table in 
   match Sqlite3.exec db sql with
   | Sqlite3.Rc.OK -> ()
   | r ->
-    let message =  "Unable to clean the table order_total." in
+    let message =  Printf.sprintf "Unable to clean the table %s." table in
     gracefully_exit r message db ;;
 
 (** Writes a list of order total records into an SQLite database.
@@ -65,6 +76,16 @@ let clean_table db table =
     @raise Failure if insertion fails. *)
 let write_order_total_to_db db_path order_total_lst = 
   let db = Sqlite3.db_open db_path in
+
+  (* Create table if it does not exist *)
+  let sql = "CREATE TABLE IF NOT EXISTS order_total (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    order_id INTEGER NOT NULL,
+    total_amount REAL NOT NULL,
+    total_taxes REAL NOT NULL
+  );" in
+  create_table db "order_total" sql;
+
   clean_table db "order_total";
 
   (* Recursively inserts each row into the database. *)
@@ -97,6 +118,15 @@ let write_order_total_to_db db_path order_total_lst =
   @return Unit () *)
 let write_avg_income_tax_monthly_to_db db_path (avg_income_tax_lst: avg_income_tax list) =
   let db = Sqlite3.db_open db_path in
+
+  (* Create table if it does not exist *)
+  let sql = "CREATE TABLE IF NOT EXISTS avg_income_tax (
+    month_year TEXT PRIMARY KEY,
+    avg_income REAL NOT NULL,
+    avg_tax REAL NOT NULL
+  );" in
+  create_table db "avg_income_tax" sql;
+
   clean_table db "avg_income_tax";
 
   (* Recursively inserts each row into the database. *)
