@@ -1,6 +1,6 @@
 (** Module for saving the output data into CSV or Sqlite DB *)
 
-open Transformer ;;
+open Types ;;
 
 (** Writes a list of order total records to a CSV file.
     @param path The file path where the CSV will be written.

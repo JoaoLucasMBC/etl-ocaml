@@ -2,6 +2,7 @@ open OUnit2 ;;
 open Etl.Transformer ;;
 open Etl.Extractor ;;
 open Etl.Helper ;;
+open Etl.Types ;;
 
 let test_transform_orders _ =
   let date = parse_order_date "2025-03-24T12:00:00" in

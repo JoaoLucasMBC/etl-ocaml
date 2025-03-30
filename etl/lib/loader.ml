@@ -1,6 +1,6 @@
 (** Module for saving the output data into CSV or Sqlite DB *)
 
-open Transformer ;;
+open Types ;;
 open Helper ;;
 
 (** Converts an [order_total_record] into a list of strings for CSV output.

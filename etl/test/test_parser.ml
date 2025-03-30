@@ -1,6 +1,7 @@
 open OUnit2 ;;
 open Etl.Helper ;;
 open Etl.Extractor ;;
+open Etl.Types ;;
 
 
 let test_parse_id _ =

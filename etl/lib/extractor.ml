@@ -1,39 +1,8 @@
 (** Module for processing orders and order items from CSV files and URLs. *)
 
 open Helper ;;
+open Types ;;
 
-(** Represents an order with an ID, client ID, order date, status, and origin. *)
-type order = { 
-  id: int; 
-  client_id: int; 
-  order_date: Ptime.t; 
-  status: int; 
-  origin: int; 
-} ;;
-
-(** Represents an item in an order, including the order ID, product ID, quantity, price, and tax. *)
-type order_item = { 
-  order_id: int; 
-  product_id: int; 
-  quantity: int; 
-  price: float; 
-  tax: float; 
-} ;;
-
-(** Represents a joined record of an order and its items, including order and item details. This is used after an INNER JOIN
-    operation on the order and order_item tables. 
-*)
-type item_join_order = {
-  order_id: int;
-  client_id: int;
-  order_date: Ptime.t;
-  status: int;
-  origin: int;
-  product_id: int;
-  quantity: int;
-  price: float;
-  tax: float;
-} ;;
 
 (** Parses a list of strings into an [order] record.
     @param order The list of strings representing an order row read from a csv source.

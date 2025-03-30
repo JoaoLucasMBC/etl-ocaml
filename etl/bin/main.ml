@@ -1,6 +1,7 @@
 open Etl.Extractor ;;
 open Etl.Transformer ;;
 open Etl.Loader ;;
+open Etl.Types ;;
 
 
 (** Entry point of the program.

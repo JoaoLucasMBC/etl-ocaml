@@ -1,21 +1,6 @@
 (** Module for transforming order and order_item data into output data *)
 
-open Extractor ;;
-
-(** Represents the total amount and taxes for an order. *)
-type order_total = {
-  order_id: int;  (** Unique identifier for the order. *)
-  total_amout: float;  (** Total amount spent on the order. *)
-  total_taxes: float;  (** Total taxes applied to the order. *)
-  order_date: Ptime.t
-} ;;
-
-(** Record to store the average income and average tax by a month-year *)
-type avg_income_tax = {
-  month_year: string;  (** The month-year for the record. *)
-  avg_income: float;  (** The average income for the month-year. *)
-  avg_tax: float  (** The average tax for the month-year. *)
-} ;;
+open Types ;;
 
 (** Transforms a list of joined order items into a list of order totals.
     This function aggregates the total amount and taxes for each order.
