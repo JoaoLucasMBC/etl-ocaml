@@ -13,6 +13,12 @@ depends: [
   "dune" {>= "3.17"}
   "ocaml"
   "odoc" {with-doc}
+  "str"
+  "cohttp"
+  "cohttp-lwt-unix"
+  "sqlite3"
+  "ptime"
+  "ounit2" {with-test}
 ]
 build: [
   ["dune" "subst"] {dev}
