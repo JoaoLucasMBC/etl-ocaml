@@ -12,13 +12,13 @@ bug-reports: "https://github.com/username/reponame/issues"
 depends: [
   "dune" {>= "3.17"}
   "ocaml"
-  "odoc" {with-doc}
-  "str"
+  "csv"
   "cohttp"
   "cohttp-lwt-unix"
   "sqlite3"
   "ptime"
   "ounit2" {with-test}
+  "odoc" {with-doc}
 ]
 build: [
   ["dune" "subst"] {dev}
