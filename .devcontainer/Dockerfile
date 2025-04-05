@@ -12,6 +12,7 @@ RUN apt-get update && apt-get install -y \
     opam init -y && \
     eval $(opam env) && \
     opam switch create 4.14.0 && \
+    sudo apt-get install -y libgmp-dev libgmpxx4ldbl libsqlite3-dev && \
     opam install -y dune utop ocaml-lsp-server && \
     opam install -y odoc csv sqlite3 ptime cohttp-lwt-unix ounit2 lwt_ssl
 

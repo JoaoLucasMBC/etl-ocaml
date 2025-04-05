@@ -42,15 +42,15 @@ The complete report can be found in the `report.md` file.
    ```
 
 3. If there is an error in the command above, there was probably a problem while installing the dependencies. You can install them directly by running:
-
-   ```sh
-   opam install --deps-only .
-   ```
-
-   or
-
+   
    ```sh
    opam install -y dune utop ocaml-lsp-server odoc csv sqlite3 ptime cohttp-lwt-unix ounit2 lwt_ssl
+   ```
+
+   or 
+    
+   ```sh
+   opam install --deps-only .
    ```
 
 ## Running the Application
@@ -66,7 +66,7 @@ dune exec etl
 You can run the application with filters for STATUS and/or ORIGIN, respecting the same format they appear in the original CSV files. For example:
 
 ```sh
-dune exec -- etl --status "Complete" --origin "P"
+dune exec -- etl --status "Complete" --origin "O"
 ```
 
 The options for the filters are:
