@@ -12,8 +12,8 @@ RUN apt-get update && apt-get install -y \
     opam init -y && \
     eval $(opam env) && \
     opam switch create 4.14.0 && \
-    opam install -y dune utop ocaml-lsp-server \
-    opam install -y odoc csv sqlite3 ptime cohttp-lwt-unix ounit2
+    opam install -y dune utop ocaml-lsp-server && \
+    opam install -y odoc csv sqlite3 ptime cohttp-lwt-unix ounit2 lwt_ssl
 
 USER vscode
 
